@@ -60,7 +60,7 @@ export const Form = () => {
 
   return (
     <div
-      className="w-3xl max-w-md ml-10 -mt-11 p-10 rounded-lg shadow-lg"
+      className="w-3xl max-w-md ml-10 -mt-50 p-10 rounded-lg shadow-lg"
       style={{ backgroundColor: "#FFFFFF" }}
     >
       {/* Tabs */}

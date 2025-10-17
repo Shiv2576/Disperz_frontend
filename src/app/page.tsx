@@ -139,7 +139,7 @@ export default function Page() {
           style={{
             position: "absolute",
             right: "150px",
-            top: "30%",
+            top: "22%",
             transform: "translateY(-27%)",
             maxWidth: "700px",
             color: "#e0e0e0",

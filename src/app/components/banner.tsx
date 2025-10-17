@@ -5,10 +5,9 @@ interface BannerProps {
 }
 
 const Banner: React.FC<BannerProps> = ({ position = "top" }) => {
-  // Container fills full viewport width with no side padding
   const containerStyle: React.CSSProperties = {
     width: "100%",
-    padding: "3em 0", // ← No horizontal padding!
+    padding: "3em 0",
     fontFamily: "'Raleway', sans-serif",
     backgroundColor: "#313131",
     color: "#fff",
@@ -24,15 +23,11 @@ const Banner: React.FC<BannerProps> = ({ position = "top" }) => {
           : "flex-start",
     boxSizing: "border-box",
     margin: 0,
-    // Ensure it stretches even if parent has constraints
     position: "relative",
-    left: 0,
-    right: 0,
   };
 
   return (
     <>
-      {/* Google Font - only once per app ideally, but included for portability */}
       {typeof document !== "undefined" &&
         !document.querySelector('link[href*="Raleway"]') && (
           <link
@@ -43,7 +38,6 @@ const Banner: React.FC<BannerProps> = ({ position = "top" }) => {
 
       <style>
         {`
-          /* Ensure no unwanted spacing */
           .banner-root {
             width: 100%;
             margin: 0;
@@ -58,7 +52,7 @@ const Banner: React.FC<BannerProps> = ({ position = "top" }) => {
             display: grid;
             place-items: center;
             overflow: hidden;
-            margin-bottom: 2em;
+            margin-bottom: 3em;
           }
 
           .banner-marquee-text {
@@ -96,15 +90,78 @@ const Banner: React.FC<BannerProps> = ({ position = "top" }) => {
             place-items: center;
           }
 
-          .banner-description {
-            margin: 2em auto;
-            padding: 0 1em; /* Add side padding only to text for readability */
-            max-width: 40ch;
+          /* Footer Styles */
+          .site-footer {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5em;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2em;
+            font-size: 16px;
+            color: #F5F5F5; /* Soft white */
+          }
+
+          .footer-column {
+            flex: 1;
+            min-width: 180px;
+          }
+
+          .footer-column h3 {
+            color: #C0A080; /* Warm beige */
+            margin-bottom: 1em;
+            font-weight: 700;
+            font-size: 1.1em;
+          }
+
+          .footer-column p,
+          .footer-column address,
+          .footer-column a {
+            color: #F5F5F5;
+            text-decoration: none;
+            line-height: 1.6;
+            font-weight: 400;
+          }
+
+          .footer-column a:hover {
+            color: #FFFFFF; /* Pure white on hover */
+          }
+
+          .footer-column address {
+            font-style: normal;
+          }
+
+          .footer-bottom {
+            margin-top: 2.5em;
+            padding-top: 1.5em;
+            border-top: 1px solid #444;
+            text-align: center;
+            color: #F5F5F5;
+            font-size: 0.9em;
+            width: 100%;
+          }
+
+          @media (max-width: 650px) {
+            .site-footer {
+              flex-direction: column;
+              gap: 1.5em;
+            }
+          }
+
+          .footer-top-line {
+            height: 2px;
+            background: #C0A080; /* Warm beige — elegant and subtle */
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 2.5em;
+            border-radius: 1px;
+            /* Optional: add a soft glow */
+            box-shadow: 0 0 6px rgba(192, 160, 128, 0.3);
           }
         `}
       </style>
 
-      {/* This div will stretch to full width of its parent — ensure parent allows it */}
       <div className="banner-root" style={containerStyle}>
         <div className="banner-marquee">
           <div className="banner-marquee-blur" aria-hidden="true">
@@ -115,11 +172,44 @@ const Banner: React.FC<BannerProps> = ({ position = "top" }) => {
           </div>
         </div>
 
-        <p className="banner-description">
-          I wanted to make a Gooey Marquee type effect, tried a couple of
-          things, and ended up using two layers of text, one with the effect,
-          and a clean one on top so that the text remains readable.
-        </p>
+        {/* Footer Section */}
+        <footer className="site-footer">
+          {/* Top accent line */}
+          <div className="footer-top-line"></div>
+
+          <div className="footer-column">
+            <h3>About</h3>
+            <p>
+              We blend design and technology to create meaningful digital
+              experiences.
+            </p>
+          </div>
+
+          <div className="footer-column">
+            <h3>Product</h3>
+            <p>A next-gen platform for creators, teams, and visionaries.</p>
+          </div>
+
+          <div className="footer-column">
+            <h3>Location</h3>
+            <address>
+              Studio 7B, Creative Hub
+              <br />
+              Berlin, Germany
+            </address>
+          </div>
+
+          <div className="footer-column">
+            <h3>Contact</h3>
+            <p>
+              <a href="mailto:hello@example.com">hello@example.com</a>
+            </p>
+          </div>
+
+          <div className="footer-bottom">
+            © {new Date().getFullYear()} Your Brand. All rights reserved.
+          </div>
+        </footer>
       </div>
     </>
   );
