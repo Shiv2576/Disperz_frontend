@@ -1,103 +1,200 @@
-import Image from "next/image";
+// src/app/page.tsx
+"use client";
+import { useEffect, useRef, useState } from "react";
+import Navbar from "./components/navbar";
+import Footbar from "./components/footbar";
+import LoadingScreen from "./components/loading";
+import { Form } from "./components/form";
+import { Globe } from "./components/globe";
 
-export default function Home() {
+export default function Page() {
+  const vantaRef = useRef<HTMLDivElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  let vantaEffect: any = null; // store effect for cleanup
+
+  // ✅ Initialize Vanta AFTER p5 is ready
+  useEffect(() => {
+    const initVanta = async () => {
+      try {
+        // 1. Load p5
+        const p5Module = await import("p5");
+        if (typeof window !== "undefined") {
+          (window as any).p5 = p5Module.default || p5Module;
+        }
+
+        // 2. Load TRUNK effect
+        const { default: TRUNK } = await import("@/lib/vanta/trunk.js");
+
+        // 3. ✅ CREATE THE EFFECT
+        if (vantaRef.current) {
+          vantaEffect = TRUNK({
+            el: vantaRef.current,
+            color: 0x595557,
+            backgroundColor: 0x313131,
+            spacing: 3,
+            chaos: 3.0,
+          });
+        }
+      } catch (err) {
+        console.error("Failed to initialize Vanta TRUNK:", err);
+      }
+    };
+
+    initVanta();
+
+    // Cleanup on unmount
+    return () => {
+      if (vantaEffect && typeof vantaEffect.destroy === "function") {
+        vantaEffect.destroy();
+      }
+    };
+  }, []);
+
+  // Scroll effect (optional)
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const maxScroll = 800;
+      const progress = Math.min(scrollTop / maxScroll, 1);
+      setScrollProgress(progress);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const liftAmount = scrollProgress * 100;
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div style={{ minHeight: "200vh", backgroundColor: "#313131" }}>
+      <LoadingScreen />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* First Section — Hero with Vanta */}
+      <div
+        style={{
+          height: "100vh",
+          position: "relative",
+          transform: `translateY(-${liftAmount}px)`,
+          transition: "transform 0.1s linear",
+          zIndex: 2,
+          boxShadow:
+            scrollProgress > 0 ? "0 10px 50px rgba(0,0,0,0.5)" : "none",
+        }}
+      >
+        {/* ✅ Vanta background container — MUST have size */}
+        <div
+          ref={vantaRef}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: -1,
+          }}
+        />
+
+        <Navbar />
+        {/* Optional: hero content */}
+        <main style={{ padding: "2rem", color: "white" }} />
+        <Footbar />
+      </div>
+
+      {/* Second Section — Form + Globe */}
+      <div
+        style={{
+          height: "100vh",
+          backgroundColor: "#313131",
+          position: "relative",
+          zIndex: 1,
+          padding: "4rem 2rem",
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "center",
+          overflow: "hidden",
+        }}
+      >
+        <div style={{ flex: "0 0 auto", maxWidth: "500px", zIndex: 2 }}>
+          <Form />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+        {/* Globe */}
+        <div
+          style={{
+            position: "absolute",
+            right: "6rem",
+            top: "50%",
+            transform: "translateY(-50%)",
+            pointerEvents: "none",
+            zIndex: 1,
+          }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <div style={{ width: "280px", height: "280px" }}>
+            <Globe />
+          </div>
+        </div>
+
+        {/* Text */}
+        <div
+          style={{
+            position: "absolute",
+            right: "150px",
+            top: "30%",
+            transform: "translateY(-27%)",
+            maxWidth: "700px",
+            color: "#e0e0e0",
+            fontFamily: "'Inter', 'Arial', sans-serif",
+            lineHeight: 1.6,
+            fontSize: "1.15rem",
+            zIndex: 3,
+          }}
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <h2
+            style={{
+              fontSize: "50px",
+              fontWeight: "500", // 'font-medium' = 500
+              color: "#0d9488", // teal-500
+              lineHeight: 1.2, // 'leading-tight' ≈ 1.2
+              marginBottom: "3rem",
+              textShadow: "0 0 1px rgba(0, 212, 255, 0.3)",
+
+              ...(typeof window !== "undefined" && window.innerWidth >= 768
+                ? { fontSize: "65px" }
+                : {}),
+            }}
+          >
+            Seamless Collaboration
+          </h2>
+          <p
+            style={{
+              fontSize: "clamp(1rem, 10vw, 1.5rem)",
+              lineHeight: 1.5,
+              color: "#e0e0e0",
+              letterSpacing: "0.04em",
+              maxWidth: "60ch",
+            }}
+          >
+            Disperz streamlines token distribution with a gas-optimized batch
+            airdrop contract.Send tokens to unlimited recipients in one
+            transaction — cutting gas fees by up to 90%,
+            <br />
+            eliminating repetitive workflows,and ensuring secure,auditable
+            distributions for DAOs,
+            <br />
+            projects, and communities.
+            <br />
+            Built for scale and transparency, Disperz
+            <br />
+            provides intuitive analytics, on-chain
+            <br />
+            proof of distribution, and integration support
+            <br />
+            for leading DeFi platforms — empowering projects to reward
+            <br />
+            contributors, engage communities, and automate complex token
+            campaigns effortlessly.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

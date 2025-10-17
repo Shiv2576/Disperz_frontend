@@ -1,3 +1,4 @@
+// eslint.config.mjs
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -19,6 +20,17 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+  },
+  // 👇 Add this object to configure rules
+  {
+    rules: {
+      "no-this-alias": [
+        "error",
+        {
+          allowedNames: ["self", "that", "ctx", "effect", "instance", "me"],
+        },
+      ],
+    },
   },
 ];
 
