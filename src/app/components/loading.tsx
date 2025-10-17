@@ -8,13 +8,27 @@ export default function LoadingScreen() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Simulate loading delay (e.g., data fetch, assets)
+    // Prevent scrolling on body when loading starts
+    document.body.style.overflow = "hidden";
+
+    // Simulate loading delay
     const timer = setTimeout(() => {
       setIsLoaded(true);
-    }, 3000); // Adjust duration as needed
+    }, 3000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      // Re-enable scrolling when component unmounts or loading ends
+      document.body.style.overflow = "";
+    };
   }, []);
+
+  // Re-enable scrolling when isLoaded becomes true
+  useEffect(() => {
+    if (isLoaded) {
+      document.body.style.overflow = "";
+    }
+  }, [isLoaded]);
 
   return (
     <AnimatePresence>

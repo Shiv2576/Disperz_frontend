@@ -6,6 +6,7 @@ import Footbar from "./components/footbar";
 import LoadingScreen from "./components/loading";
 import { Form } from "./components/form";
 import { Globe } from "./components/globe";
+import Banner from "./components/banner";
 
 export default function Page() {
   const vantaRef = useRef<HTMLDivElement>(null);
@@ -150,51 +151,62 @@ export default function Page() {
         >
           <h2
             style={{
-              fontSize: "50px",
-              fontWeight: "500", // 'font-medium' = 500
-              color: "#0d9488", // teal-500
-              lineHeight: 1.2, // 'leading-tight' ≈ 1.2
+              fontFamily: "'Poppins', 'Segoe UI', 'Helvetica Neue', sans-serif", // formal + slim look
+              fontWeight: 300, // lighter = slim
+              fontSize:
+                typeof window !== "undefined" && window.innerWidth >= 768
+                  ? "70px"
+                  : "50px",
+              color: "#5eead4", // teal base color
+              lineHeight: 1.1,
               marginBottom: "3rem",
-              textShadow: "0 0 1px rgba(0, 212, 255, 0.3)",
-
-              ...(typeof window !== "undefined" && window.innerWidth >= 768
-                ? { fontSize: "65px" }
-                : {}),
+              letterSpacing: "1px",
+              textShadow: `
+                0 0 5px rgba(13, 148, 136, 0.7),
+                0 0 10px rgba(13, 148, 136, 0.5),
+                0 0 20px rgba(13, 148, 136, 0.3)
+              `, // glowing effect
+              transition: "all 0.3s ease-in-out",
             }}
           >
             Seamless Collaboration
           </h2>
+
           <p
             style={{
-              fontSize: "clamp(1rem, 10vw, 1.5rem)",
-              lineHeight: 1.5,
-              color: "#e0e0e0",
-              letterSpacing: "0.04em",
-              maxWidth: "60ch",
+              fontFamily: "'Poppins', 'Segoe UI', 'Helvetica Neue', sans-serif", // clean + professional
+              fontWeight: 300, // slim
+              fontSize: "clamp(1rem, 2vw, 1.3rem)", // responsive but subtle
+              lineHeight: 1.7, // more readable
+              color: "#d6d6d6", // softer white for elegance
+              letterSpacing: "0.03em", // just a touch of spacing
+              maxWidth: "65ch", // slightly wider for better flow
+              marginTop: "1rem",
+              marginBottom: "2rem",
             }}
           >
             Disperz streamlines token distribution with a gas-optimized batch
-            airdrop contract.Send tokens to unlimited recipients in one
-            transaction — cutting gas fees by up to 90%,
+            airdrop contract. Send tokens to unlimited recipients in one
+            transaction — cutting gas fees by up to 90%, eliminating repetitive
+            workflows,
             <br />
-            eliminating repetitive workflows,and ensuring secure,auditable
-            distributions for DAOs,
+            and ensuring secure, auditable distributions for DAOs,
             <br />
             projects, and communities.
             <br />
-            Built for scale and transparency, Disperz
+            Built for scale and transparency, Disperz provides
             <br />
-            provides intuitive analytics, on-chain
+            intuitive analytics, on-chain proof of distribution, and
             <br />
-            proof of distribution, and integration support
+            integration support for leading DeFi platforms
             <br />
-            for leading DeFi platforms — empowering projects to reward
+            empowering projects to reward contributors, engage
             <br />
-            contributors, engage communities, and automate complex token
-            campaigns effortlessly.
+            communities, and automate complex token campaigns effortlessly.
           </p>
         </div>
       </div>
+      <Banner />
     </div>
   );
 }

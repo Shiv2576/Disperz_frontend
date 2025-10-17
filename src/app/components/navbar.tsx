@@ -17,7 +17,7 @@ export default function Navbar() {
       </Link>
 
       {/* Navigation Links */}
-      <div className="relative hidden md:flex space-x-10">
+      <div className="relative hidden md:flex space-x-20">
         {["Home", "Product", "About"].map((tab) => (
           <div
             key={tab}
