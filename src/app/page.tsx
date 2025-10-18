@@ -2,11 +2,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Navbar from "./components/navbar";
-import Footbar from "./components/footbar";
+import Reel from "./components/reel";
 import LoadingScreen from "./components/loading";
 import { Form } from "./components/form";
 import { Globe } from "./components/globe";
 import Banner from "./components/banner";
+import RoadmapSection from "./components/cards";
+import Footer from "./components/footer";
 
 export default function Page() {
   const vantaRef = useRef<HTMLDivElement>(null);
@@ -97,7 +99,7 @@ export default function Page() {
         <Navbar />
         {/* Optional: hero content */}
         <main style={{ padding: "2rem", color: "white" }} />
-        <Footbar />
+        <Reel />
       </div>
 
       {/* Second Section — Form + Globe */}
@@ -139,7 +141,7 @@ export default function Page() {
           style={{
             position: "absolute",
             right: "150px",
-            top: "22%",
+            top: "28%",
             transform: "translateY(-27%)",
             maxWidth: "700px",
             color: "#e0e0e0",
@@ -192,21 +194,23 @@ export default function Page() {
             <br />
             and ensuring secure, auditable distributions for DAOs,
             <br />
-            projects, and communities.
+            projects, and communities. Built for scale and
             <br />
-            Built for scale and transparency, Disperz provides
+            transparency, Disperz provides intuitive analytics,
             <br />
-            intuitive analytics, on-chain proof of distribution, and
+            on-chain proof of distribution, and integration
             <br />
-            integration support for leading DeFi platforms
+            support for leading DeFi platforms empowering
             <br />
-            empowering projects to reward contributors, engage
+            projects to reward contributors, engage communities,
             <br />
-            communities, and automate complex token campaigns effortlessly.
+            and automate complex token campaigns effortlessly.
           </p>
         </div>
       </div>
       <Banner />
+      <RoadmapSection />
+      <Footer />
     </div>
   );
 }

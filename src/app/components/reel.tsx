@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-export default function Footbar() {
+export default function Reel() {
   const logos = [
     "/avax.svg",
     "/coinbase.svg",
