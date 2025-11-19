@@ -13,22 +13,22 @@ import Footer from "./components/footer";
 export default function Page() {
   const vantaRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
-  let vantaEffect: any = null; // store effect for cleanup
+  const [isMobile, setIsMobile] = useState(false);
+  let vantaEffect: any = null;
+  const MOBILE_BREAKPOINT = 768;
 
-  // ✅ Initialize Vanta AFTER p5 is ready
   useEffect(() => {
+    if (isMobile) return;
+
     const initVanta = async () => {
       try {
-        // 1. Load p5
         const p5Module = await import("p5");
         if (typeof window !== "undefined") {
           (window as any).p5 = p5Module.default || p5Module;
         }
 
-        // 2. Load TRUNK effect
         const { default: TRUNK } = await import("@/lib/vanta/trunk.js");
 
-        // 3. ✅ CREATE THE EFFECT
         if (vantaRef.current) {
           vantaEffect = TRUNK({
             el: vantaRef.current,
@@ -45,15 +45,13 @@ export default function Page() {
 
     initVanta();
 
-    // Cleanup on unmount
     return () => {
       if (vantaEffect && typeof vantaEffect.destroy === "function") {
         vantaEffect.destroy();
       }
     };
-  }, []);
+  }, [isMobile]);
 
-  // Scroll effect (optional)
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -65,13 +63,50 @@ export default function Page() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const checkScreenSize = () => {
+      if (typeof window !== "undefined") {
+        setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+      }
+    };
+
+    checkScreenSize();
+
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#313131",
+          color: "#d6d6d6",
+          textAlign: "center",
+          padding: "20px",
+        }}
+      >
+        <h1 style={{ color: "#5eead4" }}>Desktop View Required</h1>
+        <p>
+          This application is optimized for desktop and tablet screens. Please
+          view on a screen wider than {MOBILE_BREAKPOINT}px.
+        </p>
+      </div>
+    );
+  }
+
   const liftAmount = scrollProgress * 100;
 
   return (
     <div style={{ minHeight: "200vh", backgroundColor: "#313131" }}>
       <LoadingScreen />
 
-      {/* First Section — Hero with Vanta */}
       <div
         style={{
           height: "100vh",
@@ -83,7 +118,6 @@ export default function Page() {
             scrollProgress > 0 ? "0 10px 50px rgba(0,0,0,0.5)" : "none",
         }}
       >
-        {/* ✅ Vanta background container — MUST have size */}
         <div
           ref={vantaRef}
           style={{
@@ -97,12 +131,10 @@ export default function Page() {
         />
 
         <Navbar />
-        {/* Optional: hero content */}
         <main style={{ padding: "2rem", color: "white" }} />
         <Reel />
       </div>
 
-      {/* Second Section — Form + Globe */}
       <div
         style={{
           height: "100vh",
@@ -120,7 +152,6 @@ export default function Page() {
           <Form />
         </div>
 
-        {/* Globe */}
         <div
           style={{
             position: "absolute",
@@ -136,7 +167,6 @@ export default function Page() {
           </div>
         </div>
 
-        {/* Text */}
         <div
           style={{
             position: "absolute",
@@ -153,13 +183,13 @@ export default function Page() {
         >
           <h2
             style={{
-              fontFamily: "'Poppins', 'Segoe UI', 'Helvetica Neue', sans-serif", // formal + slim look
-              fontWeight: 300, // lighter = slim
+              fontFamily: "'Poppins', 'Segoe UI', 'Helvetica Neue', sans-serif",
+              fontWeight: 300,
               fontSize:
                 typeof window !== "undefined" && window.innerWidth >= 768
                   ? "70px"
                   : "50px",
-              color: "#5eead4", // teal base color
+              color: "#5eead4",
               lineHeight: 1.1,
               marginBottom: "3rem",
               letterSpacing: "1px",
@@ -167,7 +197,7 @@ export default function Page() {
                 0 0 5px rgba(13, 148, 136, 0.7),
                 0 0 10px rgba(13, 148, 136, 0.5),
                 0 0 20px rgba(13, 148, 136, 0.3)
-              `, // glowing effect
+              `,
               transition: "all 0.3s ease-in-out",
             }}
           >
@@ -176,13 +206,13 @@ export default function Page() {
 
           <p
             style={{
-              fontFamily: "'Poppins', 'Segoe UI', 'Helvetica Neue', sans-serif", // clean + professional
-              fontWeight: 300, // slim
-              fontSize: "clamp(1rem, 2vw, 1.3rem)", // responsive but subtle
-              lineHeight: 1.7, // more readable
-              color: "#d6d6d6", // softer white for elegance
-              letterSpacing: "0.03em", // just a touch of spacing
-              maxWidth: "65ch", // slightly wider for better flow
+              fontFamily: "'Poppins', 'Segoe UI', 'Helvetica Neue', sans-serif",
+              fontWeight: 300,
+              fontSize: "clamp(1rem, 2vw, 1.3rem)",
+              lineHeight: 1.7,
+              color: "#d6d6d6",
+              letterSpacing: "0.03em",
+              maxWidth: "65ch",
               marginTop: "1rem",
               marginBottom: "2rem",
             }}
